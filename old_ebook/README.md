@@ -1,0 +1,3 @@
+Interactive Textbook Version 0.0.1
+============================
+The Interactive Textbook is a concept project designed to explore HTML 5 as a basis for creating interactive textbooks for courses. The initial concept project is designed for the Spring 2012 CS 161 course at UC Berkeley under supervision of Professor Dawn Song and will be a study guide for course material as demonstration. Future plains will be to not only improve the framework but also to push the material to being an actual textbook resource for the course.

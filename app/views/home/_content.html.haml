@@ -1,0 +1,245 @@
+-# Holds the content, slide, and resources for a given slide
+%body{:onload => "init()"}
+  %a{:href => "javascript:prev()"}
+  -#
+    #prev-page-turn
+      .arrow <<
+  #divider
+  #container
+    #content
+      / Begin the textbook Content Section
+      / Cover Page
+      .page
+        .left-page
+          .title Introduction to Computer Security
+          .section-title CS 161 Spring 2012 Study Guide
+          %p
+            %em University of California, Berkeley
+          %br/
+          %br/
+          %center
+            %img{:src => "images/cover/secure-laptop.png"}/
+        .right-page
+          .section-title Preface
+          %p
+            The Interactive Textbook is a concept project designed to explore HTML 5 as a basis for creating
+            interactive textbooks for courses. The initial concept project is designed for the Spring 2012
+            CS 161 course at UC Berkeley under supervision of Professor Dawn Song and will be a study guide for
+            course material as demonstration.
+          .section-title Compatibility
+          %p
+            At the moment you can use this in any modern day browser and should have a screen of at least
+            1000px by 650px for the best viewing experience.
+          .section-title How to Use
+          %p
+            To go to the next section just click on the right arrows on the right side of the screen, to go back
+            a section just click on the left arrows on the left side of the screen.
+          .section-title Version
+          %p Version 0.0.1 and currently under active development.
+        .clear
+      / Table of Contents
+      .page
+        .left-page
+          .title Table of Contents
+          %p Much of the study guide is based of the CS 161 Spring 2012 Syllabus and will follow a similar ordering.
+          %ul.toc
+            %li Chapter 1: Secure Coding
+            %ul
+              %li Control Hijacking Attacks
+              %li Control Hijacking Defenses
+              %li Fuzz Testing and Dynamic Symbolic Execution
+              %li Static Analysis and Program Verification
+            %li Chapter 2: Secure Architecture Concepts
+            %ul
+              %li Isolation and Reference Monitors
+              %li Secure Architecture
+              %li Trusted Computing and Hardware Capabilities
+              %li Security Principles and Case Studies
+            %li Chapter 3: Mobile Security
+            %ul
+              %li Mobile Platform Security
+              %li Device Security Management
+              %li Mobile Application Security and Privacy
+        .right-page
+          %ul.toc
+            %li Chapter 4: Cryptography
+            %ul
+              %li Cryptography Concepts
+              %li Practical Cryptography
+            %li Chapter 5: Web Security
+            %ul
+              %li Web Security Overview and Concepts
+              %li Session Management and User Authentication
+              %li Web Application Security
+              %li HTTPS, Goals and Pitfalls
+            %li Chapter 6: Network Security and Malware
+            %ul
+              %li Network Protocols and Vulnerabilities
+              %li Network Defenses and Security Testing
+              %li Malware Overview and Viruses
+              %li Worms, Botnets, Attacks and Defenses
+              %li Denial-of-Service Attacks
+        .clear
+      / Chapter 1
+      .page
+        .left-page
+          .title Chapter 1: Secure Coding
+          %p
+            In this chapter we will examine some common vulnerabilities and how we can protect our systems
+            by being vigilant in preventing these vulnerabilities.
+          .section-title Section 1.1: Control Hijacking Attacks
+          %p
+            An attacker can gain control of a program by redirecting the control flow to run malicious code. One
+            broad spectrum of attacks that are used to accomplish this are called
+            = succeed "." do
+              %b buffer overflow attacks
+          %p
+            First we will quickly review the stack calling procedure as seen in x86 architecture. The following
+            are important sections of the process layout in memory followed by a figure of the process layout.
+          %table
+            %tr
+              %th Term
+              %th Definition
+            %tr
+              %td Stack
+              %td Memory that grows towards decreasing addresses and initialized at run-time.
+            %tr
+              %td Heap and BSS
+              %td Memory that grows towards increasing addresses and initialized at run-time.
+            %tr
+              %td Data
+              %td Initialized at compile time.
+        .right-page
+          %table
+            %tr
+              %th Term
+              %th Definition
+            %tr
+              %td Text
+              %td Read-only memory that holds the instructions of the program.
+          .figure
+            %img{:src => "images/chapter-01/process-layout.png"}/
+            .caption Figure 1.1: Process layout in the memory.
+        .clear
+      .page
+        .left-page
+          %p
+            We will be mainly dealing with the stack and buffer overflows so the following example shows
+            a buffer in a function call.
+          %p Given the following function:
+          %pre
+            :preserve
+              
+              void func(char *str) {
+                  char buf[128];
+                  strcpy(buf, str);
+                  do-something(buf);
+              }
+                                    %p Then the following is what the stack will look like during the function call:
+          .figure
+            %img{:src => "images/chapter-01/function-call-01.png", :width => "390px"}/
+            .caption Figure 1.2: Function call with a buffer.
+        .right-page
+          %p
+            Do you see any problems with the program? This seems fairly logical to write when requiring user input to copy information
+            from an input string to a buffer of some sort. Try the following quiz:
+          .quiz
+            .question
+              What do you think happens if
+              %tt *str
+              is 136 bytes long after
+              = succeed "?" do
+                %tt strcpy()
+            .choices
+              %input{:name => "strcpy", :type => "radio", :value => "The first 128 bytes of <tt>*str</tt> will be copied into to the buffer."}/
+              The first 128 bytes of
+              %tt *str
+              will be copied to the buffer.
+              %br/
+              %input{:name => "strcpy", :type => "radio", :value => "Nothing"}/
+              Nothing
+              %br/
+              %input#strcpy_answer{:name => "strcpy", :type => "radio", :value => "The contents of *str will overflow the buffer."}/
+              The contents of
+              %tt *str
+              will overflow the buffer and overwrite the stack frame pointer and return address.
+              %br/
+            .quiz-slider
+              %input.button{:onclick => "quiz('strcpy')", :type => "button", :value => "Check Answer"}/
+            #strcpy_results.results
+            .caption Quiz 1.1: The buffer and string copy function.
+        .clear
+      .page
+        .left-page
+          %p
+            As seen in the Quiz 1.1, the
+            %tt strcpy()
+            function does not check the length of the string! This is an issue
+            and will continue to copy until it hits a
+            %tt NULL
+            terminator or
+            = succeed "." do
+              %tt '\0'
+            Because of this, the function will
+            end up overwriting the stack frame pointer and return address. This is where the vulnerability lies and is open to
+            buffer overflow attacks. You can see the "overflow" illustrated in Figure 1.3.
+          .figure
+            %img{:src => "images/chapter-01/function-call-02.png", :width => "390px"}/
+            .caption Figure 1.3: Buffer overflow of a string length larger than the buffer.
+          %p
+            This means an attacker can change the return address to anything. So in Figure 1.4 suppose Program P is
+            %tt exec("/bin/sh")
+            as seen from Aleph One.
+        .right-page
+          %p
+            Then when
+            %tt func()
+            exits, since the return address points to Program P, then Program P will execute in the stack!
+          .figure
+            %img{:src => "images/chapter-01/bin-shell.png", :width => "390px"}/
+            .caption Figure 1.4: Buffer overflow and redirecting to execute shell.
+      .page
+        .left-page
+          %p
+            Being able to guess where the malicious code lies can be difficult though, so attackers employee a technique called a
+            %strong NOP slide
+            which is to insert a lot of NOPs or code that does not do anything before the malicious code
+            so as to give a large guessing range.
+        .right-page
+          %p The following are some unsafe libc functions, so avoid using them in your code.
+          %ul
+            %li
+              %tt strcpy
+            %li
+              %tt strcat
+            %li
+              %tt gets
+            %li
+              %tt scanf
+          %p Even some "safe" libc functions can be dangerous, for example:
+          %ul
+            %li
+              %tt strncpy
+            %li
+              %tt strncat
+          %p
+            The reason these are misleading functions is that, although they make sure to only copy a set length of characters, it does not
+            guarantee that the strings end with a terminating
+            %tt '\0'
+            character!
+      .page
+        .left-page
+          .section-title Section 1.1: Control Hijacking Attacks (Cont)
+          %p
+            There are many other common hijacking opportunities even with code used to prevent
+            buffer overflows that we just seen. Many still rely on buffer overflow attacks as the main attack vector
+            but utilize workarounds to some code meant to check against such attacks.
+          .subsection Integer Overflows
+          %p Integer overflows are vulnerabilities that involve edge cases commonly forgotten by programmers.
+        .right-page
+      / End of the Content Section
+  %a{:href => "javascript:next()"}
+  -#
+    #next-page-turn
+      .arrow >>
+

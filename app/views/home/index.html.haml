@@ -1,0 +1,71 @@
+.page
+  .header
+    .ChapterHeader
+      %a{:href => ""}
+        %img.nav-left
+          = image_tag "left_arrow.png"
+      %span.ChapterWording Chapter 5: Buffer Overflow
+      %a{:href => ""}
+        %img.nav-right
+          = image_tag "right_arrow.png"
+  %br
+  .content
+    .index
+      .l0 Sections
+      %hr.blue
+        %hr.blue
+          %a{:href => "#Introduction"}
+            .l1 Introduction
+          %a{:href => "#Http Protocol"}
+            .l1 Http Protocol
+          %a{:href => "#Rendering"}
+            .l1 Rendering
+          %a{:href => "#Isolation"}
+            .l1 Isolation
+          %a{:href => "#Communication"}
+            .l1 Communication
+          %a{:href => "#Navigation"}
+            .l1 Navigation
+          %a{:href => "#Cookies"}
+            .l1 Cookies
+          %a{:href => "#Security UI"}
+            .l1 Security UI
+          %a{:href => "#Frames"}
+            .l1 Frames
+    .content-wrapper
+      .title Chapter 1: Secure Coding
+      %p
+        In this chapter we will examine some common vulnerabilities and how we can protect our systems
+        by being vigilant in preventing these vulnerabilities.
+      .section-title Section 1.1: Control Hijacking Attacks
+      %p
+        An attacker can gain control of a program by redirecting the control flow to run malicious code. One
+        broad spectrum of attacks that are used to accomplish this are called
+        = succeed "." do
+          %b buffer overflow attacks
+      %p
+        First we will quickly review the stack calling procedure as seen in x86 architecture. The following
+        are important sections of the process layout in memory followed by a figure of the process layout.
+      %table
+        %tr
+          %th Term
+          %th Definition
+        %tr
+          %td Stack
+          %td Memory that grows towards decreasing addresses and initialized at run-time.
+        %tr
+          %td Heap and BSS
+          %td Memory that grows towards increasing addresses and initialized at run-time.
+        %tr
+          %td Data
+          %td Initialized at compile time.
+        %tr
+          %th Term
+          %th Definition
+        %tr
+          %td Text
+          %td Read-only memory that holds the instructions of the program.
+          -#.figure
+            = image_tag "process-layout.png"
+          .caption Figure 1.1: Process layout in the memory.
+        .clear

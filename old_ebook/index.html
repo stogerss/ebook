@@ -1,0 +1,281 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+    HTML5 E-Book Interactive Textbook v.0.0.1
+    Max Feldman & Richard Hsu
+
+    Initial Design Concept Developed for CS 161 at UC Berkeley for Spring 2012
+    Under Supervision of Professor Dawn Song
+-->
+<html>
+<head><title>CS 161 Security Study Guide</title></head>
+    <link href="css/ebook-style.css" rel="stylesheet" type="text/css">
+    <script language="javascript" type="text/javascript" src="js/ebook-navigation.js"></script>
+    <script language="javascript" type="text/javascript" src="js/ebook-quizzes.js"></script>
+<body onload="init()">
+
+<a href="javascript:prev()"><div id="prev-page-turn"><div class="arrow">&#171;</div></div></a>
+
+<div id="divider"></div>
+
+<div id="container">
+    <div id="content">
+    <!-- Begin the textbook Content Section -->
+  
+    <!-- Cover Page -->
+    <div class="page">
+      <div class="left-page">
+        <div class="title">Introduction to Computer Security</div>
+        <div class="section-title">CS 161 Spring 2012 Study Guide</div>
+        <p><em>University of California, Berkeley</em></p>
+        <br /><br />
+        <center><img src="images/cover/secure-laptop.png" /></center>
+      </div>
+      <div class="right-page">
+        <div class="section-title">Preface</div>
+        <p>The Interactive Textbook is a concept project designed to explore HTML 5 as a basis for creating 
+        interactive textbooks for courses. The initial concept project is designed for the Spring 2012 
+        CS 161 course at UC Berkeley under supervision of Professor Dawn Song and will be a study guide for 
+        course material as demonstration.</p>
+        <div class="section-title">Compatibility</div>
+        <p>At the moment you can use this in any modern day browser and should have a screen of at least 
+        1000px by 650px for the best viewing experience.</p>
+        <div class="section-title">How to Use</div>
+        <p>To go to the next section just click on the right arrows on the right side of the screen, to go back
+        a section just click on the left arrows on the left side of the screen.</p>
+        <div class="section-title">Version</div>
+        <p>Version 0.0.1 and currently under active development.</p>
+      </div>
+      <div class="clear"></div>
+    </div>  
+    
+    <!-- Table of Contents -->
+    <div class="page">
+      <div class="left-page">
+        <div class="title">Table of Contents</div>
+        <p>Much of the study guide is based of the CS 161 Spring 2012 Syllabus and will follow a similar ordering.</p>
+        <ul class="toc">
+          <li>Chapter 1: Secure Coding</li>
+            <ul>
+              <li>Control Hijacking Attacks</li>
+              <li>Control Hijacking Defenses</li>
+              <li>Fuzz Testing and Dynamic Symbolic Execution</li>
+              <li>Static Analysis and Program Verification</li>
+            </ul>
+          <li>Chapter 2: Secure Architecture Concepts</li>
+            <ul>
+              <li>Isolation and Reference Monitors</li>
+              <li>Secure Architecture</li>
+              <li>Trusted Computing and Hardware Capabilities</li>
+              <li>Security Principles and Case Studies</li>
+            </ul>
+          <li>Chapter 3: Mobile Security</li>
+            <ul>
+              <li>Mobile Platform Security</li>
+              <li>Device Security Management</li>
+              <li>Mobile Application Security and Privacy</li>
+            </ul>         
+        </ul>
+      </div>
+      <div class="right-page">
+        <ul class="toc">
+          <li>Chapter 4: Cryptography</li>
+            <ul>
+              <li>Cryptography Concepts</li>
+              <li>Practical Cryptography</li>
+            </ul>
+          <li>Chapter 5: Web Security</li>
+            <ul>
+              <li>Web Security Overview and Concepts</li>
+              <li>Session Management and User Authentication</li>
+              <li>Web Application Security</li>
+              <li>HTTPS, Goals and Pitfalls</li>
+            </ul>
+          <li>Chapter 6: Network Security and Malware</li>
+            <ul>
+              <li>Network Protocols and Vulnerabilities</li>
+              <li>Network Defenses and Security Testing</li>
+              <li>Malware Overview and Viruses</li>
+              <li>Worms, Botnets, Attacks and Defenses</li>
+              <li>Denial-of-Service Attacks</li>
+            </ul>
+        </ul>
+      </div>
+      <div class="clear"></div>
+    </div>
+        
+        <!-- Chapter 1 -->
+        <div class="page">
+            <div class="left-page">
+                <div class="title">Chapter 1: Secure Coding</div>
+                <p>In this chapter we will examine some common vulnerabilities and how we can protect our systems 
+        by being vigilant in preventing these vulnerabilities.</p>
+                <div class="section-title">Section 1.1: Control Hijacking Attacks</div>
+        <p>An attacker can gain control of a program by redirecting the control flow to run malicious code. One 
+        broad spectrum of attacks that are used to accomplish this are called <b>buffer overflow attacks</b>.</p>
+                <p>First we will quickly review the stack calling procedure as seen in x86 architecture. The following
+        are important sections of the process layout in memory followed by a figure of the process layout.</p>
+        <table>
+          <tr>
+            <th>Term</th>
+            <th>Definition</th>
+          </tr>
+          <tr>
+            <td>Stack</td>
+            <td>Memory that grows towards decreasing addresses and initialized at run-time.</td>
+          </tr>
+          <tr>
+            <td>Heap and BSS</td>
+            <td>Memory that grows towards increasing addresses and initialized at run-time.</td>
+          </tr>
+          <tr>
+            <td>Data</td>
+            <td>Initialized at compile time.</td>
+          </tr>
+        </table>
+            </div>
+            <div class="right-page">
+                <table>
+          <tr>
+            <th>Term</th>
+            <th>Definition</th>
+          </tr>
+          
+          <tr>
+            <td>Text</td>
+            <td>Read-only memory that holds the instructions of the program.</td>
+          </tr>
+        </table>
+        
+        <div class="figure">
+          <img src="images/chapter-01/process-layout.png" />
+                <div class="caption">Figure 1.1: Process layout in the memory.</div>
+        </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+        
+        <div class="page">
+            <div class="left-page">
+                <p>We will be mainly dealing with the stack and buffer overflows so the following example shows
+        a buffer in a function call.</p>
+        
+        <p>Given the following function:</p>
+        <pre>
+void func(char *str) {
+    char buf[128];
+    strcpy(buf, str);
+    do-something(buf);
+}
+        </pre>
+        <p>Then the following is what the stack will look like during the function call:</p>
+        <div class="figure">
+          <img src="images/chapter-01/function-call-01.png" width="390px" />
+                <div class="caption">Figure 1.2: Function call with a buffer.</div>
+        </div>
+            </div>
+            <div class="right-page">
+        <p>Do you see any problems with the program? This seems fairly logical to write when requiring user input to copy information
+        from an input string to a buffer of some sort. Try the following quiz:</p>
+                <div class="quiz">
+                <div class="question">
+                    What do you think happens if <tt>*str</tt> is 136 bytes long after <tt>strcpy()</tt>?
+                </div>
+                <div class="choices">
+                    <input type="radio" name="strcpy" value="The first 128 bytes of <tt>*str</tt> will be copied into to the buffer." /> The first 128 bytes of <tt>*str</tt> 
+            will be copied to the buffer.<br />
+            <input type="radio" name="strcpy" value="Nothing" /> Nothing<br />
+                    <input type="radio" name="strcpy" value="The contents of *str will overflow the buffer." id="strcpy_answer" /> The contents of <tt>*str</tt> 
+            will overflow the buffer and overwrite the stack frame pointer and return address.<br />
+                </div>
+                <div class="quiz-slider"><input type="button" class="button" value="Check Answer" onclick="quiz('strcpy')" /></div>
+                <div id="strcpy_results" class="results"></div>
+                <div class="caption">Quiz 1.1: The buffer and string copy function.</div>
+            </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+
+    <div class="page">
+      <div class="left-page">
+        <p>As seen in the Quiz 1.1, the <tt>strcpy()</tt> function does not check the length of the string! This is an issue
+        and will continue to copy until it hits a <tt>NULL</tt> terminator or <tt>'\0'</tt>. Because of this, the function will
+        end up overwriting the stack frame pointer and return address. This is where the vulnerability lies and is open to
+        buffer overflow attacks. You can see the "overflow" illustrated in Figure 1.3.</p>
+        <div class="figure">
+          <img src="images/chapter-01/function-call-02.png" width="390px" />
+          <div class="caption">Figure 1.3: Buffer overflow of a string length larger than the buffer.</div> 
+        </div>
+        <p>This means an attacker can change the return address to anything. So in Figure 1.4 suppose Program P is <tt>exec("/bin/sh")</tt> as seen from Aleph One.</p>
+      </div>
+      <div class="right-page">
+        <p>Then when <tt>func()</tt> exits, since the return address points to Program P, then Program P will execute in the stack!</p>
+        <div class="figure">
+          <img src="images/chapter-01/bin-shell.png" width="390px" />
+          <div class="caption">Figure 1.4: Buffer overflow and redirecting to execute shell.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="left-page">
+        <p>Being able to guess where the malicious code lies can be difficult though, so attackers employee a technique called a
+        <strong>NOP slide</strong> which is to insert a lot of NOPs or code that does not do anything before the malicious code
+        so as to give a large guessing range.</p>
+        <div class="quiz">
+                <div class="question">
+                    What if code for Program P (from previous example) starts with a <tt>'\0'</tt> character?
+                </div>
+                <div class="choices">
+                    <input type="radio" name="NOP" value="The <tt>strcpy()</tt> function will copy the entire code for P onto the stack." /> 
+            The <tt>strcpy()</tt> function will copy the entire code for P onto the stack.<br />
+                    <input type="radio" name="NOP" value="The attacker will obtain shell on the victim system." /> The attacker will obtain 
+            shell on the victim system.<br />
+            <input type="radio" name="NOP" value="The attacker will fail to get shell on the victim system." id="NOP_answer" /> The attacker will fail to 
+            get shell on the victim system.<br />
+            <input type="radio" name="NOP" value="The victim system will be safe from attack." /> The victim system will be safe from attack.<br />
+                </div>
+                <div class="quiz-slider"><input type="button" class="button" value="Check Answer" onclick="quiz('NOP')" /></div>
+                <div id="NOP_results" class="results"></div>
+                <div class="caption">Quiz 1.2: The <tt>'\0'</tt> character effect.</div>
+            </div>
+      </div>
+      <div class="right-page">
+        <p>The following are some unsafe libc functions, so avoid using them in your code.</p>
+        <ul>
+          <li><tt>strcpy</tt></li>
+          <li><tt>strcat</tt></li>
+          <li><tt>gets</tt></li>
+          <li><tt>scanf</tt></li>
+        </ul>
+        <p>Even some "safe" libc functions can be dangerous, for example:</p>
+        <ul>
+          <li><tt>strncpy</tt></li>
+          <li><tt>strncat</tt></li>
+        </ul>
+        <p>The reason these are misleading functions is that, although they make sure to only copy a set length of characters, it does not
+        guarantee that the strings end with a terminating <tt>'\0'</tt> character!</p>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="left-page">
+        <div class="section-title">Section 1.1: Control Hijacking Attacks (Cont)</div>
+        <p>There are many other common hijacking opportunities even with code used to prevent
+        buffer overflows that we just seen. Many still rely on buffer overflow attacks as the main attack vector
+        but utilize workarounds to some code meant to check against such attacks.</p>
+        <div class="subsection">Integer Overflows</div>
+        <p>Integer overflows are vulnerabilities that involve edge cases commonly forgotten by programmers.</p>
+      </div>
+      <div class="right-page">
+        
+      </div>
+    </div>
+
+    <!-- End of the Content Section -->
+    </div>
+</div>
+
+<a href="javascript:next()"><div id="next-page-turn"><div class="arrow">&#187;</div></div>
+    </a>
+</body>
+</html>
